@@ -2,24 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProductCard from "@/components/ProductCard";
 import ProductCardSkeleton from "./skeleton/ProductCardSkeleton";
+import { useProducts } from "../api/productServices";
 
 const NewArrivals = () => {
   const {
     data: products,
     isPending,
     error,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: async () => {
-      const res = await axios.get("https://api.escuelajs.co/api/v1/products", {
-        params: {
-          limit: 4,
-          offset: 0,
-        },
-      });
-      return res.data;
-    },
-  });
+  } = useProducts({limit:4})
 
   console.log(products);
 
