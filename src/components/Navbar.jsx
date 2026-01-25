@@ -28,7 +28,9 @@ const Navbar = () => {
             <AuthDialog />
           </div>
 
-          <ShoppingCart className="text-gray-700" />
+         <Link to="/cart">
+            <ShoppingCart className="text-gray-700" />
+         </Link>
         </div>
       </MaxWidthContainer>
     </div>
