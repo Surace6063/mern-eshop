@@ -12,21 +12,17 @@ import upload from "../middlewares/upload.js"
 
 const router = express.Router()
 
-router
-.route('/')
-.get(getCategories)
-.post(
-  upload.single('image'), // multer file upload middleware
+router.route("/").get(getCategories).post(
+  upload.single("image"), // multer file upload middleware
   zodValidate(createCategorySchema), // zod validation middleware
   createCategory
 )
 
 // get single category
 router
-.route('/:id')
-.get(getCategory)
-.patch(updateCategory)
-.delete(deleteCategory)
-
+  .route("/:id")
+  .get(getCategory)
+  .patch(upload.single("image"), updateCategory)
+  .delete(deleteCategory)
 
 export default router
