@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import morgan from 'morgan'
 import connectDB from "./config/db.js";
 import categoryRoute from "./routes/category.route.js";
+import productRoute from "./routes/product.route.js";
 import globalErrorHandler from "./middlewares/globalErrorhandler.js";
 
 dotenv.config();
@@ -27,6 +28,8 @@ app.get("/", (req, res) => {
 
 // category route
 app.use('/api/categories', categoryRoute)
+// product route
+app.use('/api/products', productRoute)
 
 
 // global error handler
