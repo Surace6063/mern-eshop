@@ -66,54 +66,41 @@ export const createCategory = asyncHandler(async (req, res, next) => {
   })
 })
 
-/**
- * @desc update category
- * @route PATCH /api/categories/:id
- * @access Admin
- */
 export const updateCategory = asyncHandler(async (req, res, next) => {
-  const updateData = { ...req.body }
+  const category = await Category.findById(req.params.id)
+
+  if (!category) return next(ErrorMessage("Category not found!", 404))
+
+  // update fields dynamically (partial update)
+  Object.assign(category, req.body)
 
   // if name is updated → regenerate slug
   if (req.body.name) {
-    updateData.slug = createSlugify(req.body.name)
+    category.slug = createSlugify(req.body.name)
   }
 
   // update image in cloudinary... also delete previous image
   if (req.file) {
-    // find existing image of category
-    const oldCategory = await Category.findById(req.params.id).select("image")
-    if (!oldCategory) return next(ErrorMessage("Category not found!", 404))
-
-    // if catgeory image has public_id delete existing image
-    if (oldCategory?.image?.public_id) {
-      await deleteFromCloudinary(oldCategory?.image?.public_id)
+    if (category?.image?.public_id) {
+      await deleteFromCloudinary(category.image.public_id)
     }
 
     const result = await uploadToCloudinary(req.file.buffer, "eshop/categories")
 
-    updateData.image = {
+    category.image = {
       url: result.secure_url,
       public_id: result.public_id
     }
   }
 
-  const updatedCategory = await Category.findByIdAndUpdate(
-    req.params.id,
-    updateData,
-    {
-      new: true,
-      runValidators: true
-    }
-  )
-
-  if (!updatedCategory) return next(ErrorMessage("Category not found!", 404))
+  await category.save()
 
   res.status(200).json({
     message: "Category updated successfully.",
-    category: updatedCategory
+    category
   })
 })
+
 
 /**
  * @desc delete category

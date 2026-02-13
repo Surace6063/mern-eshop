@@ -7,8 +7,8 @@ import {
   updateCategory
 } from "../controllers/category.controller.js"
 import { zodValidate } from "../middlewares/zodValidate.js"
-import { createCategorySchema } from "../validators/category.schema.js"
 import upload from "../middlewares/upload.js"
+import { createCategorySchema, updateCategorySchema } from "../validators/category.schema.js"
 
 const router = express.Router()
 
@@ -22,7 +22,11 @@ router.route("/").get(getCategories).post(
 router
   .route("/:id")
   .get(getCategory)
-  .patch(upload.single("image"), updateCategory)
+  .patch(
+    upload.single("image"),
+    zodValidate(updateCategorySchema), 
+    updateCategory
+  )
   .delete(deleteCategory)
 
 export default router
