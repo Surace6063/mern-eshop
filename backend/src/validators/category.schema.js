@@ -10,8 +10,7 @@ const categoryBaseSchema = z.object({
     .nonempty("Category name is required!") // catches empty strings
     .min(3, "Category name must be at least 3 characters.")
     .max(25, "Category name cannot exceed 25 characters.")
-    .regex(nameRegex, "Category name can only contain letters and spaces")
-    .trim(),
+    .regex(nameRegex, "Category name can only contain letters and spaces"),
 
   isActive: z.boolean().optional(),
 
