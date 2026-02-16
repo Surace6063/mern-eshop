@@ -11,16 +11,63 @@ import { uploadToCloudinary } from "../utils/uploadToCloudinary.js"
  * @access Public
  */
 export const getProducts = asyncHandler(async (req, res, next) => {
-  const products = await Product.find()
-    .sort({ createdAt: -1 })
+  const { category, search, minPrice, maxPrice, sort, page=1, limit=10 } = req.query
+
+  const currentPage = Number(page)
+  const perPage = Number(limit)
+  const skip = (currentPage - 1) * perPage
+
+  const filter = {}
+  let sortOption = {
+    createdAt: -1 // default sort
+  }
+
+  if (category) {
+    filter.category = category
+  }
+
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } }
+    ]
+  }
+
+  if (minPrice || maxPrice) {
+    filter.price = {}
+    if (minPrice) filter.price.$gte = Number(minPrice)
+    if (maxPrice) filter.price.$lte = Number(maxPrice)
+  }
+
+  // price sorting
+  if (sort === "asc") {
+    sortOption = { price: 1 }  // ascending -> low to high
+  } else if (sort === "desc") {
+    sortOption = { price: -1 }  // descending -> high to low
+  }
+
+  // total number of products
+  const totalProduct = await Product.countDocuments(filter)
+
+  const products = await Product.find(filter)
+    .sort(sortOption)
     .populate("category", "name")
     .select("-__v -updatedAt")
+    .limit(perPage)
+    .skip(skip)
 
   if (products.length === 0) {
     return next(ErrorMessage("Product not found", 404))
   }
 
-  res.status(200).json(products)
+  res.status(200).json({
+    totalProduct,
+    totalPages: Math.ceil(totalProduct / perPage),
+    currentPage,
+    hasNextPage: currentPage * perPage < totalProduct,
+    hasPrevPage: currentPage > 1,
+    products
+  })
 })
 
 /**

@@ -11,7 +11,7 @@ router
 .get(getProducts)
 .post(
     upload.array('images'),
-    zodValidate(createProductSchema),
+    // zodValidate(createProductSchema),
     createProduct
 )
 

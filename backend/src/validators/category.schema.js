@@ -14,10 +14,10 @@ const categoryBaseSchema = z.object({
 
   isActive: z.boolean().optional(),
 
-  image: z.object({
-    url: z.string({ required_error: "Image URL is required" }),
-    public_id: z.string({ required_error: "Image public_id is required" })
-  })
+  // image: z.object({
+  //   url: z.string({ required_error: "Image URL is required" }),
+  //   public_id: z.string({ required_error: "Image public_id is required" })
+  // })
 });
 
 // Create schema: all required
