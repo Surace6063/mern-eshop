@@ -3,6 +3,8 @@ import ErrorMessage from "../utils/ErrorMessage.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import { createSlugify } from "../utils/createSlug.js"
 import { deleteFromCloudinary } from "../utils/deleteFromCloudinary.js"
+import { getPagination } from "../utils/pagination.js"
+import SearchFilter from "../utils/serachFilter.js"
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js"
 
 /**
@@ -11,26 +13,26 @@ import { uploadToCloudinary } from "../utils/uploadToCloudinary.js"
  * @access Public
  */
 export const getProducts = asyncHandler(async (req, res, next) => {
-  const { category, search, minPrice, maxPrice, sort, page=1, limit=10 } = req.query
+  const {
+    category,
+    search,
+    minPrice,
+    maxPrice,
+    sort,
+    page = 1,
+    limit = 10
+  } = req.query
 
-  const currentPage = Number(page)
-  const perPage = Number(limit)
-  const skip = (currentPage - 1) * perPage
+  const filter = {
+    ...SearchFilter(search,['name','description'])
+  }
 
-  const filter = {}
   let sortOption = {
     createdAt: -1 // default sort
   }
 
   if (category) {
     filter.category = category
-  }
-
-  if (search) {
-    filter.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { description: { $regex: search, $options: "i" } }
-    ]
   }
 
   if (minPrice || maxPrice) {
@@ -41,32 +43,35 @@ export const getProducts = asyncHandler(async (req, res, next) => {
 
   // price sorting
   if (sort === "asc") {
-    sortOption = { price: 1 }  // ascending -> low to high
+    sortOption = { price: 1 } // ascending -> low to high
   } else if (sort === "desc") {
-    sortOption = { price: -1 }  // descending -> high to low
+    sortOption = { price: -1 } // descending -> high to low
   }
 
   // total number of products
   const totalProduct = await Product.countDocuments(filter)
 
+  // pagination
+  const pagination = getPagination(page, limit, totalProduct)
+
   const products = await Product.find(filter)
     .sort(sortOption)
     .populate("category", "name")
     .select("-__v -updatedAt")
-    .limit(perPage)
-    .skip(skip)
+    .limit(pagination.perPage)
+    .skip(pagination.skip)
 
   if (products.length === 0) {
     return next(ErrorMessage("Product not found", 404))
   }
 
   res.status(200).json({
-    totalProduct,
-    totalPages: Math.ceil(totalProduct / perPage),
-    currentPage,
-    hasNextPage: currentPage * perPage < totalProduct,
-    hasPrevPage: currentPage > 1,
-    products
+    success: true,
+    message: "Product fetched sucessfully.",
+    data: {
+      pagination,
+      products
+    }
   })
 })
 

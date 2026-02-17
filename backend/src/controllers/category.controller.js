@@ -3,6 +3,8 @@ import ErrorMessage from "../utils/ErrorMessage.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import { createSlugify } from "../utils/createSlug.js"
 import { deleteFromCloudinary } from "../utils/deleteFromCloudinary.js"
+import { getPagination } from "../utils/pagination.js"
+import SearchFilter from "../utils/serachFilter.js"
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js"
 
 /**
@@ -11,13 +13,34 @@ import { uploadToCloudinary } from "../utils/uploadToCloudinary.js"
  * @access Public
  */
 export const getCategories = asyncHandler(async (req, res, next) => {
-  const categories = await Category.find()
+  const { limit = 10, page = 1, search } = req.query
+
+  const filter = {
+    ...SearchFilter(search, ["name"])
+  }
+
+  const totalCategories = await Category.countDocuments(filter)
+
+  const pagination = getPagination(page, limit, totalCategories)
+
+  const categories = await Category.find(filter)
+    .sort({ createdAt: -1 })
+    .limit(pagination.perPage)
+    .skip(pagination.skip)
+    .select("-__v -updatedAt")
 
   if (categories.length === 0) {
     return next(ErrorMessage("Categories not found", 404))
   }
 
-  res.status(200).json(categories)
+  res.status(200).json({
+    success: true,
+    message: "Category fetched sucessfully.",
+    data: {
+      pagination,
+      categories
+    }
+  })
 })
 
 /**
@@ -26,7 +49,9 @@ export const getCategories = asyncHandler(async (req, res, next) => {
  * @access Public
  */
 export const getCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findById(req.params.id)
+  const category = await Category.findById(req.params.id).select(
+    "-__v -updatedAt"
+  )
 
   if (!category) {
     return next(ErrorMessage("Categories not found", 404))
@@ -100,7 +125,6 @@ export const updateCategory = asyncHandler(async (req, res, next) => {
     category
   })
 })
-
 
 /**
  * @desc delete category
