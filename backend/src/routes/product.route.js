@@ -16,7 +16,7 @@ router
 )
 
 router
-.route('/:id')
+.route('/:slug')
 .get(getProduct)
 .delete(deleteProduct)
 .patch(
