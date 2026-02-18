@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import apiRequest from "../utils/apiRequest";
 
 // getting all categories
 export const useCategories = () => {
     return useQuery({
         queryKey:['categories'],
         queryFn: async () => {
-            const res = await axios.get('https://api.escuelajs.co/api/v1/categories')
-            return res.data
+            const res = await apiRequest.get('/categories')
+            return res.data.data
         }
     })
 }

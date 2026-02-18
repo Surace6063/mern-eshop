@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import apiRequest from "../utils/apiRequest";
 
 // getting products
-export const useProducts = ({limit=10,offset=0}) => {
+export const useProducts = ({
+  limit = 10
+} = {}) => {
   return useQuery({
-    queryKey: ["products",limit,offset],
+    queryKey: ["products"],
     queryFn: async () => {
-      const res = await axios.get("https://api.escuelajs.co/api/v1/products", {
-        params: {
-          limit,
-          offset,
-        },
-      });
-      return res.data;
+      let params = {}
+      if(limit) params.limit = limit
+
+      const res = await apiRequest.get("/products",{params})
+      return res.data.data;
     },
   });
 };
@@ -23,7 +23,7 @@ export const useProduct = (slug) => {
   return useQuery({
     queryKey: ["product",slug],
     queryFn: async () => {
-      const res = await axios.get(`https://api.escuelajs.co/api/v1/products/slug/${slug}`)
+      const res = await apiRequest.get(`/products/${slug}`)
       return res.data;
     }
   })
