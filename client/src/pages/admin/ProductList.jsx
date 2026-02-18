@@ -13,8 +13,10 @@ import { Edit, Plus, Trash } from "lucide-react";
 import { useProducts } from "../../api/productServices";
 import { cn } from "../../lib/utils";
 
+const LIMIT = 5
+
 const ProductList = () => {
-  const {data:products,isPending,error} = useProducts({limit:5,offset:5})
+  const {data,isPending,error} = useProducts({limit:LIMIT})
 
   if(isPending) return <p>loading...</p>
   if(error) return <p>{error.message}</p>
@@ -46,16 +48,16 @@ const ProductList = () => {
         </TableHeader>
         <TableBody>
             {
-              products.map((item,index) => (
-                <TableRow key={item.id} className={cn(
+              data.products.map((item,index) => (
+                <TableRow key={item._id} className={cn(
                   index % 2 === 0 ? 'bg-slate-50' : 'bg-white'
                 )}>
-                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item._id}</TableCell>
                   <TableCell>
-                    <img src={item.images[0]} alt={item.title} className="size-16 rounded-xl shadow object-cover" />
+                    <img src={item.images[0].url} alt={item.name} className="size-16 rounded-xl shadow object-cover" />
                   </TableCell>
                   <TableCell className="font-semibold text-gray-800">
-                    {item.title}
+                    {item.name}
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
                     {item.category.name}
@@ -64,7 +66,7 @@ const ProductList = () => {
                     ${item.price}
                   </TableCell>
                   <TableCell>
-                    1
+                    {item.stock}
                   </TableCell>
                   <TableCell className="space-x-2">
                     <Button variant="destructive">

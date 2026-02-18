@@ -1,30 +1,40 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import ProductCard from "@/components/ProductCard";
-import ProductCardSkeleton from "./skeleton/ProductCardSkeleton";
-import { useProducts } from "../api/productServices";
+import ProductCard from "@/components/ProductCard"
+import ProductCardSkeleton from "./skeleton/ProductCardSkeleton"
+import { useProducts } from "../api/productServices"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel"
+
+const LIMIT = 10
 
 const NewArrivals = () => {
-  const {
-    data: products,
-    isPending,
-    error,
-  } = useProducts({limit:4})
-
-  console.log(products);
+  const { data, isPending, error } = useProducts({ limit: LIMIT })
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {isPending ? (
-        [...Array(4)].map((_, index) => <ProductCardSkeleton key={index} />)
-      ) : error ? (
-        <p>{error.message}</p>
-      ) : (
-        products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))
-      )}
-    </div>
-  );
-};
-export default NewArrivals;
+    <Carousel className="relative">
+      <CarouselContent>
+        {isPending ? (
+          [...Array(4)].map((_, index) => <ProductCardSkeleton key={index} />)
+        ) : error ? (
+          <p>{error.message}</p>
+        ) : (
+          data.products.map((product) => (
+            <CarouselItem key={product._id} className="sm:basis-1/2 
+            md:basis-1/3 lg:basis-1/5">
+              <ProductCard product={product} />
+            </CarouselItem>
+          ))
+        )}
+      </CarouselContent>
+      <div className="absolute -top-8 right-15">
+        <CarouselPrevious size="icon-lg" className="cursor-pointer" variant="default" />
+        <CarouselNext size="icon-lg" className="cursor-pointer" variant="default" />
+      </div>
+    </Carousel>
+  )
+}
+export default NewArrivals

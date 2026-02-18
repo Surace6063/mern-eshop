@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { data, useParams } from "react-router-dom";
 import { useProduct } from "../api/productServices";
 import MaxWidthContainer from "../components/ui/maxwidthcontainer";
 import { Button } from "../components/ui/button";
@@ -11,7 +11,7 @@ const ProductDetailPage = () => {
   const { data: product, isPending, error } = useProduct(slug);
 
   if (isPending) return <ProductDetailSkeleton />
-  if (error) return <p>{error.message}</p>;
+  if (error) return <p>{error.message}</p>
 
   return (
     <MaxWidthContainer className="my-16">
@@ -19,8 +19,8 @@ const ProductDetailPage = () => {
         {/* LEFT — IMAGE */}
         <div className="w-full max-h-[60vh] rounded-xl overflow-hidden">
           <img
-            src={product.images[0]}
-            alt={product.title}
+            src={product.images[0].url}
+            alt={product.name}
             className="w-full h-full object-cover rounded-xl overflow-hidden"
           />
         </div>
@@ -33,7 +33,7 @@ const ProductDetailPage = () => {
           </p>
 
           <h1 className="text-4xl font-semibold text-gray-800">
-            {product.title}
+            {product.name}
           </h1>
 
           {/* Price */}

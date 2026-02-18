@@ -4,7 +4,7 @@ import ProductCardSkeleton from "../components/skeleton/ProductCardSkeleton";
 import ProductCard from "../components/ProductCard"
 
 const ProductPage = () => {
-  const { data: products, isPending, error } = useProducts({});
+  const { data, isPending, error } = useProducts()
 
   return (
     <MaxWidthContainer className="my-16">
@@ -18,7 +18,7 @@ const ProductPage = () => {
         ) : error ? (
           <p>{error.message}</p>
         ) : (
-          products.map((product) => (
+          data.products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))
         )}

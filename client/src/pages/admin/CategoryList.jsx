@@ -14,7 +14,7 @@ import { cn } from "../../lib/utils";
 import { useCategories } from "../../api/categoryServices";
 
 const CategoryList = () => {
-  const { data: categories, isPending, error } = useCategories();
+  const { data, isPending, error } = useCategories()
 
   if (isPending) return <p>loading..</p>;
   if (error) return <p>{error.message}</p>;
@@ -41,17 +41,17 @@ const CategoryList = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories.map((cat, index) => (
+          {data.categories.map((cat, index) => (
             <TableRow
-              key={cat.id}
+              key={cat._id}
               className={cn(index % 2 === 0 ? "bg-slate-50" : "bg-white")}
             >
               <TableCell className="font-semibold text-gray-800">
-                {cat.id}
+                {cat._id}
               </TableCell>
               <TableCell>
                 <img
-                  src={cat.image}
+                  src={cat.image.url}
                   alt={cat.name}
                   className="size-16 rounded-xl shadow object-cover object-center"
                 />

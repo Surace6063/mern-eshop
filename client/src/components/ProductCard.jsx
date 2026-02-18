@@ -5,14 +5,14 @@ const ProductCard = ({ product }) => {
     <Link to={`/product/${product.slug}`}>
       <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 bg-white">
         <img
-          src={product.images[0]}
-          alt={product.title}
+          src={product.images[0].url}
+          alt={product.name}
           className="aspect-square object-cover"
         />
 
         <div className="p-4">
           <h3 className="font-semibold text-gray-800 truncate">
-            {product.title}
+            {product.name}
           </h3>
 
           <p className="line-clamp-2 text-gray-500 text-sm mt-1 mb-3">
