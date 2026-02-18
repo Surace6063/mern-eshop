@@ -77,11 +77,11 @@ export const getProducts = asyncHandler(async (req, res, next) => {
 
 /**
  * @desc get single product
- * @route /api/products/:id
+ * @route /api/products/:slug
  * @access Public
  */
 export const getProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id).select(
+  const product = await Product.findOne({slug:req.params.slug}).select(
     "-__v -updatedAt"
   )
 
