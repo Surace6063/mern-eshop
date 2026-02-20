@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import MaxWidthContainer from "./ui/maxwidthcontainer";
 import { ShoppingCart } from "lucide-react";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   return (
@@ -20,6 +21,7 @@ const Navbar = () => {
             </div>
           </Link>
           {/* <Input /> */}
+          <SearchBar />
         </div>
 
         {/* right */}

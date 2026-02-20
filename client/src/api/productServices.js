@@ -3,13 +3,15 @@ import apiRequest from "../utils/apiRequest";
 
 // getting products
 export const useProducts = ({
-  limit = 10
+  limit = 10,
+  category = ""
 } = {}) => {
   return useQuery({
-    queryKey: ["products"],
+    queryKey: ["products",limit,category],
     queryFn: async () => {
       let params = {}
       if(limit) params.limit = limit
+      if(category) params.category = category
 
       const res = await apiRequest.get("/products",{params})
       return res.data.data;
