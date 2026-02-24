@@ -1,4 +1,5 @@
 import Product from "../models/product.model.js"
+import Category from "../models/category.model.js"
 import ErrorMessage from "../utils/ErrorMessage.js"
 import asyncHandler from "../utils/asyncHandler.js"
 import { createSlugify } from "../utils/createSlug.js"
@@ -14,7 +15,7 @@ import { uploadToCloudinary } from "../utils/uploadToCloudinary.js"
  */
 export const getProducts = asyncHandler(async (req, res, next) => {
   const {
-    category,
+    category_slug,
     search,
     minPrice,
     maxPrice,
@@ -22,6 +23,9 @@ export const getProducts = asyncHandler(async (req, res, next) => {
     page = 1,
     limit = 10
   } = req.query
+
+
+  const category = await Category.findOne({slug:category_slug}) 
 
   const filter = {
     ...SearchFilter(search,['name','description'])
@@ -32,7 +36,7 @@ export const getProducts = asyncHandler(async (req, res, next) => {
   }
 
   if (category) {
-    filter.category = category
+    filter.category = category._id
   }
 
   if (minPrice || maxPrice) {
