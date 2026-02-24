@@ -12,11 +12,28 @@ import { Button } from "../../components/ui/button";
 import { Edit, Plus, Trash } from "lucide-react";
 import { useProducts } from "../../api/productServices";
 import { cn } from "../../lib/utils";
+import { Input } from "../../components/ui/input";
+import Pazination from "../../components/Pazination";
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const LIMIT = 5
 
 const ProductList = () => {
-  const {data,isPending,error} = useProducts({limit:LIMIT})
+  const [searchParams,setSerachParams] = useSearchParams()
+  const [page,setPage] = useState(searchParams.get('page') || 1)
+  const [serachValue,setSerachValue] = useState(
+    searchParams.get('search') || "")
+
+
+  const {data,isPending,error} = useProducts({limit:LIMIT, page})
+
+  useEffect(()=>{
+    const params = {}
+    if(page) params.page = page
+
+    setSerachParams(params)
+  },[page])
 
   if(isPending) return <p>loading...</p>
   if(error) return <p>{error.message}</p>
@@ -25,6 +42,8 @@ const ProductList = () => {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-800">Product List</h1>
+
+        <Input placeHolder="search products..." className="max-w-lg" />
 
         <Button>
           Add Product <Plus />
@@ -81,6 +100,11 @@ const ProductList = () => {
             }
         </TableBody>
       </Table>
+
+      {/* pagination */}
+      <div className="mt-6 flex justify-end">
+        <Pazination setPage={setPage} pagination={data?.pagination} />
+      </div>
     </div>
   );
 };
