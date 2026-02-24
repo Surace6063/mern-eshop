@@ -29,7 +29,7 @@ const CategoryFilter = ({ setCategory }) => {
             <p>{error}</p>
           ) : (
             data.categories.map((cat) => (
-              <SelectItem key={cat._id} value={cat._id}>
+              <SelectItem key={cat._id} value={cat.slug}>
                 {cat.name}
               </SelectItem>
             ))
