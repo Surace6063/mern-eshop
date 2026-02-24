@@ -4,14 +4,22 @@ import apiRequest from "../utils/apiRequest";
 // getting products
 export const useProducts = ({
   limit = 10,
-  category = ""
+  category = "",
+  minPrice = "",
+  maxPrice = "", 
+  sort = "",
+  page = 1
 } = {}) => {
   return useQuery({
-    queryKey: ["products",limit,category],
+    queryKey: ["products",limit,category,minPrice,maxPrice,sort,page],
     queryFn: async () => {
       let params = {}
       if(limit) params.limit = limit
-      if(category) params.category = category
+      if(category) params.category_slug = category
+      if(minPrice) params.minPrice = minPrice
+      if(maxPrice) params.maxPrice = maxPrice
+      if(sort) params.sort = sort
+      if(page) params.page = page
 
       const res = await apiRequest.get("/products",{params})
       return res.data.data;
