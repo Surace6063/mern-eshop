@@ -8,10 +8,11 @@ export const useProducts = ({
   minPrice = "",
   maxPrice = "", 
   sort = "",
-  page = 1
+  page = 1,
+  search=""
 } = {}) => {
   return useQuery({
-    queryKey: ["products",limit,category,minPrice,maxPrice,sort,page],
+    queryKey: ["products",limit,category,minPrice,maxPrice,sort,page,search],
     queryFn: async () => {
       let params = {}
       if(limit) params.limit = limit
@@ -20,6 +21,7 @@ export const useProducts = ({
       if(maxPrice) params.maxPrice = maxPrice
       if(sort) params.sort = sort
       if(page) params.page = page
+      if(search) params.search = search
 
       const res = await apiRequest.get("/products",{params})
       return res.data.data;
