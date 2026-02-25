@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/select"
 import { useCategories } from "../../api/categoryServices"
 
-const CategoryFilter = ({ setCategory }) => {
+const CategoryFilter = ({ setCategory, category }) => {
   const { data, isPending, error } = useCategories()
 
   return (
-    <Select onValueChange={(value) => setCategory(
+    <Select value={category} onValueChange={(value) => setCategory(
        value === "all" ? "" : value
     )} className="w-full">
       <SelectTrigger className="w-full">

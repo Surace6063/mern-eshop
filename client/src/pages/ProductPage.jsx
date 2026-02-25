@@ -20,9 +20,14 @@ const ProductPage = () => {
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "")
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "")
   const [sortPrice, setSortPrice] = useState(searchParams.get("price") || "")
-  const [page,setPage] = useState(searchParams.get("page") || 1)
+  const [page, setPage] = useState(searchParams.get("page") || 1)
+  
+  const searchValue = searchParams.get("search") || ""
+  
 
-  const [showFilters,setShowFilters] = useState(false)
+  console.log(searchValue)
+
+  const [showFilters, setShowFilters] = useState(false)
 
   // debounce minPrice and maxPrice state
   // delay state by 500ms(0.5s)
@@ -34,8 +39,14 @@ const ProductPage = () => {
     minPrice: debouncedMinPrice,
     maxPrice: debouncedMaxPrice,
     sort: sortPrice,
-    page
+    page,
+    search: searchValue
   })
+
+  // reset page when query are applied
+  useEffect(() => {
+    setPage(1)
+  }, [category, minPrice, maxPrice, sortPrice, searchValue])
 
   useEffect(() => {
     let params = {}
@@ -44,13 +55,14 @@ const ProductPage = () => {
     if (maxPrice) params.maxPrice = maxPrice
     if (sortPrice) params.price = sortPrice
     if (page > 1) params.page = page
+    if (searchValue) params.search = searchValue
 
     setSearchParams(params)
-  }, [category, minPrice, maxPrice, sortPrice, page])
+  }, [category, minPrice, maxPrice, sortPrice, page, searchValue])
 
   // function to clear filters
   const clearFilters = () => {
-    setCategory(""),
+    setCategory(""), 
     setMaxPrice("")
     setMinPrice("")
     setPage(1)
@@ -65,29 +77,37 @@ const ProductPage = () => {
         <h1 className="text-2xl font-semibold text-gray-900">Product list</h1>
       </div> */}
 
-      <Button onClick={()=>setShowFilters(!showFilters)} variant="outline" className="lg:hidden mb-2">
-         {showFilters ? "Hide Filters" : "Show Filters"}
+      <Button
+        onClick={() => setShowFilters(!showFilters)}
+        variant="outline"
+        className="lg:hidden mb-2"
+      >
+        {showFilters ? "Hide Filters" : "Show Filters"}
       </Button>
 
       <div className="mt-6 flex flex-col lg:flex-row gap-10">
         {/* filter */}
-        <div className={
-          cn(
+        <div
+          className={cn(
             showFilters ? "block" : "hidden",
             "lg:block basis-[25%] border border-border rounded-xl shadow-sm p-6 h-fit lg:sticky lg:top-24 bg-white"
-          )
-        }>
-         <div className="flex justify-between items-center">
-           <h3 className="text-xl font-semibold text-gray-800">Filters</h3>
-           <Button onClick={clearFilters} variant="ghost" className="text-primary cursor-pointer">
+          )}
+        >
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-semibold text-gray-800">Filters</h3>
+            <Button
+              onClick={clearFilters}
+              variant="ghost"
+              className="text-primary cursor-pointer"
+            >
               clear filters
             </Button>
-         </div>
+          </div>
           <Separator className="my-4" />
           {/* filter by category */}
           <div className="space-y-3">
             <Label>Filter By Category</Label>
-            <CategoryFilter setCategory={setCategory} />
+            <CategoryFilter category={category} setCategory={setCategory} />
           </div>
 
           {/* filter by min and max price */}
@@ -96,12 +116,14 @@ const ProductPage = () => {
             <Input
               type="number"
               placeHolder="Min Price"
+              value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
             />
 
             <Input
               type="number"
               placeHolder="Max Price"
+              value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
             />
           </div>
@@ -116,6 +138,7 @@ const ProductPage = () => {
                 value="asc"
                 name="price"
                 id="price_asc"
+                checked={sortPrice === "asc"}
                 onChange={(e) => setSortPrice(e.target.value)}
               />
               <Label htmlFor="price_asc" className="text-gray-600">
@@ -129,6 +152,7 @@ const ProductPage = () => {
                 value="desc"
                 name="price"
                 id="price_desc"
+                checked={sortPrice === "desc"}
                 onChange={(e) => setSortPrice(e.target.value)}
               />
               <Label htmlFor="price_desc" className="text-gray-600">
@@ -147,6 +171,8 @@ const ProductPage = () => {
               ))
             ) : error ? (
               <p>{error.message}</p>
+            ) : data.products.length === 0 ? (
+              <p>Products not found!</p>
             ) : (
               data.products.map((product) => (
                 <ProductCard key={product._id} product={product} />
