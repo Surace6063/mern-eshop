@@ -15,6 +15,8 @@ const Pazination = ({ setPage, pagination }) => {
 
   const pages = Array.from({length: totalPages}, (_, i) => i + 1)
 
+  if(pages.length <= 1) return null
+
   return (
     <Pagination>
       <PaginationContent>
