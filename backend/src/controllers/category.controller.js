@@ -29,10 +29,6 @@ export const getCategories = asyncHandler(async (req, res, next) => {
     .skip(pagination.skip)
     .select("-__v -updatedAt")
 
-  if (categories.length === 0) {
-    return next(ErrorMessage("Categories not found", 404))
-  }
-
   res.status(200).json({
     success: true,
     message: "Category fetched sucessfully.",

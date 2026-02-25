@@ -65,10 +65,6 @@ export const getProducts = asyncHandler(async (req, res, next) => {
     .limit(pagination.perPage)
     .skip(pagination.skip)
 
-  if (products.length === 0) {
-    return next(ErrorMessage("Product not found", 404))
-  }
-
   res.status(200).json({
     success: true,
     message: "Product fetched sucessfully.",
