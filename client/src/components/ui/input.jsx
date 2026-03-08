@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils"
 
-function Input({ className, type, ...props }) {
+function Input({ className, type, error="", ...props }) {
   return (
-    <input
+   <>
+      <input
       type={type}
       data-slot="input"
       className={cn(
@@ -13,6 +14,10 @@ function Input({ className, type, ...props }) {
       )}
       {...props}
     />
+    {
+      error && <p className="text-sm text-destructive">{error}</p>
+    }
+   </>
   )
 }
 
