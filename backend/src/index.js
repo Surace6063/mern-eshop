@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import categoryRoute from "./routes/category.route.js";
 import productRoute from "./routes/product.route.js";
 import authRoute from "./routes/auth.route.js";
+import cartRoute from "./routes/cart.route.js";
 import globalErrorHandler from "./middlewares/globalErrorhandler.js";
 import cors from "./middlewares/cors.js";
 import cookieParser from "cookie-parser";
@@ -37,6 +38,8 @@ app.use('/api/categories', categoryRoute)
 app.use('/api/products', productRoute)
 // auth route
 app.use('/api/auth', authRoute)
+// cart route
+app.use('api/cart',cartRoute)
 
 
 // global error handler
