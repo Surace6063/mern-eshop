@@ -10,10 +10,12 @@ import ProductList from "./pages/admin/ProductList";
 import CategoryList from "./pages/admin/CategoryList";
 import UserList from "./pages/admin/UserList";
 import OrderList from "./pages/admin/OrderList";
+import { Toaster } from 'react-hot-toast'
 
 const App = () => {
   return (
     <>
+      <Toaster />
       <Routes>
         {/* main layout */}
         <Route element={<MainLayout />}>

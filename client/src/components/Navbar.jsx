@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import AuthDialog from "./AuthDialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import MaxWidthContainer from "./ui/maxwidthcontainer";
 import { ShoppingCart } from "lucide-react";
 import SearchBar from "./SearchBar";
+import useAuthStore from "../zustand/useAuth";
+import ProfileMenu from "./ProfileMenu";
 
 const Navbar = () => {
+  const {isAuthenticated, user} = useAuthStore()
+
   return (
     <div className="border-b border-border py-4 bg-white sticky top-0 z-50">
       <MaxWidthContainer className="flex items-center justify-between">
@@ -27,7 +29,9 @@ const Navbar = () => {
         {/* right */}
         <div className="flex items-center gap-6">
           <div className="space-x-4">
-            <AuthDialog />
+            {
+              isAuthenticated ? <ProfileMenu /> :  <AuthDialog />
+            }
           </div>
 
          <Link to="/cart">

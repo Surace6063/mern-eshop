@@ -7,21 +7,44 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Spinner } from "@/components/ui/spinner"
 import { loginValidationSchema } from "./validations/authValidation"
+import { useLoginUser } from "../api/authServices"
+import toast from "react-hot-toast"
+import useAuthStore from "../zustand/useAuth"
+import { useNavigate } from "react-router-dom"
 
 const SignInForm = () => {
-  const { setMode } = useAuthMode()
+  const { setMode, setOpen } = useAuthMode()
+  const {setUser} = useAuthStore()
+  const navigate = useNavigate()
 
   // reack hook form
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors }
   } = useForm({
     resolver: yupResolver(loginValidationSchema)
   })
 
+  const {mutate,isPending} = useLoginUser()
+
   const handleLogin = (data) => {
-    console.log(data)
+     mutate(data, {
+      onSuccess: (data) => {
+        toast.success(data?.message) // success message
+        setOpen(false)
+        setUser(data.user) // set user response to gloabl user state
+
+        if(data.user.role === "admin"){
+          navigate("/dashboard/main")
+        }
+      },
+      onError: (error) => {
+        if (error.response && error.response.data) {
+          toast.error(error.response.data.message)
+        }
+      }
+    })
   }
 
   return (
@@ -62,8 +85,8 @@ const SignInForm = () => {
         </div>
 
         {/* Button */}
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? (
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? (
             <>
               <Spinner /> signing in
             </>

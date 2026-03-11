@@ -3,21 +3,43 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import useAuthMode from "../zustand/useAuthMode"
-import {useForm} from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { registerValidationSchema } from "./validations/authValidation"
-import {Spinner} from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/spinner"
+import { useRegisterUser } from "../api/authServices"
+import toast from "react-hot-toast"
 
 const SignUpForm = () => {
-  const {setMode} = useAuthMode()
+  const { setMode, setEmail } = useAuthMode()
 
   // reack hook form
-  const {register,handleSubmit, formState:{errors,isSubmitting}} = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
     resolver: yupResolver(registerValidationSchema)
   })
 
-  const handleRegister = (data) => {
-    console.log(data)
+  // post using useMutation hook from tanstack-query
+  const { mutate, isPending } = useRegisterUser()
+
+  const handleRegister = async (data) => {
+    const { cpassword, ...registerData } = data
+    mutate(registerData, {
+      onSuccess: (data) => {
+        toast.success(data?.message) // success message
+        setMode("otp") // move to otp form
+        // // setting email to global state, to acess in opt form
+        setEmail(data.email)
+      },
+      onError: (error) => {
+        if (error.response && error.response.data) {
+          toast.error(error.response.data.message)
+        }
+      }
+    })
   }
 
   return (
@@ -38,7 +60,7 @@ const SignUpForm = () => {
         <div className="space-y-2">
           <Label htmlFor="fname">Full Name</Label>
           <Input
-            {...register('fullName')}
+            {...register("fullName")}
             id="fname"
             placeholder="eg: John Doe"
             error={errors?.fullName?.message}
@@ -49,10 +71,10 @@ const SignUpForm = () => {
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
-            {...register('email')}
+            {...register("email")}
             id="email"
             placeholder="eg: john@example.com"
-           error={errors?.email?.message}
+            error={errors?.email?.message}
           />
         </div>
 
@@ -60,7 +82,7 @@ const SignUpForm = () => {
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input
-              {...register('password')}
+            {...register("password")}
             id="password"
             type="password"
             placeholder="eg: ************"
@@ -68,11 +90,11 @@ const SignUpForm = () => {
           />
         </div>
 
-         {/* Password */}
+        {/* Password */}
         <div className="space-y-2">
           <Label htmlFor="cpassword">Confirm Password</Label>
           <Input
-            {...register('cpassword')}
+            {...register("cpassword")}
             id="cpassword"
             type="password"
             placeholder="eg: ************"
@@ -81,19 +103,21 @@ const SignUpForm = () => {
         </div>
 
         {/* Button */}
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {
-            isSubmitting ? <><Spinner /> signing up</> : "Sign Up"
-          }
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? (
+            <>
+              <Spinner /> signing up
+            </>
+          ) : (
+            "Sign Up"
+          )}
         </Button>
       </form>
 
       {/* Divider */}
       <div className="flex items-center gap-4">
         <Separator className="flex-1" />
-        <span className="text-sm text-muted-foreground">
-          or continue with
-        </span>
+        <span className="text-sm text-muted-foreground">or continue with</span>
         <Separator className="flex-1" />
       </div>
 
@@ -105,7 +129,10 @@ const SignUpForm = () => {
       {/* Switch */}
       <div className="text-sm text-muted-foreground">
         Already have an account?{" "}
-        <span onClick={()=>setMode('signIn')} className="cursor-pointer text-primary underline">
+        <span
+          onClick={() => setMode("signIn")}
+          className="cursor-pointer text-primary underline"
+        >
           Sign In
         </span>
       </div>

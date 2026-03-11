@@ -59,7 +59,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
 
   res.status(201).json({
     message: "User registered sucessfully. Check your email for the verification token.",
-    user
+    email: user.email
   })
 })
 
