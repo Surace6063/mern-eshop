@@ -39,7 +39,7 @@ app.use('/api/products', productRoute)
 // auth route
 app.use('/api/auth', authRoute)
 // cart route
-app.use('api/cart',cartRoute)
+app.use('/api/cart',cartRoute)
 
 
 // global error handler
