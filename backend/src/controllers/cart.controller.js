@@ -24,13 +24,19 @@ export const getUserCart = asyncHandler(async (req, res, next) => {
   const userId = req.user.userId
   if (!userId) return next(ErrorMessage("User not found!", 404))
 
-  const cart = await Cart.findOne({ user: userId }).populate({
+  let cart = await Cart.findOne({ user: userId }).populate({
     path: "items.product",
     populate: "category"
   })
-  if (!cart) return next(ErrorMessage("Cart not found!", 400))
 
-    const { totalQuantity, totalPrice } = recalculateCart(cart)
+  // create cart if not exists
+  if (!cart) {
+    cart = await Cart.create({
+      user: userId,
+      items: []
+    })
+  }
+  const { totalQuantity, totalPrice } = recalculateCart(cart)
 
   res.status(200).json({
     success: true,
@@ -68,7 +74,8 @@ export const addToCart = asyncHandler(async (req, res, next) => {
     })
   }
 
-  const existingItem = cart.items.find((item) => item.product == product)
+  const existingItem = cart.items.find((item) => 
+    item.product.toString() == product)
 
   if (existingItem) {
     existingItem.quantity += quantity

@@ -9,8 +9,8 @@ import protect from "../middlewares/jwtVerify.js"
 
 const router = express.Router()
 
-router.get("", protect, getUserCart)
-router.post("", protect, addToCart)
+router.get("/", protect, getUserCart)
+router.post("/", protect, addToCart)
 
 // important: must be before dynamic param
 router.delete("/clear", protect, clearUserCart) 
