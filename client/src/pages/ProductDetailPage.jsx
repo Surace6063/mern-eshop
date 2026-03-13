@@ -6,18 +6,25 @@ import { Plus, Minus, ShoppingCart } from "lucide-react"
 import ProductDetailSkeleton from "../components/skeleton/ProductDetailSkeleton"
 import { useState } from "react"
 import { cn } from "../lib/utils"
+import useAuthStore from "../zustand/useAuth"
+import useAuthMode from "../zustand/useAuthMode"
+import { useAddToCart } from "../api/cartServices"
+import toast from "react-hot-toast"
+import { Spinner } from "@/components/ui/spinner"
 
 const ProductDetailPage = () => {
+  const { isAuthenticated } = useAuthStore()
+  const { setOpen } = useAuthMode()
+
   const { slug } = useParams()
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
 
   const { data: product, isPending, error } = useProduct(slug)
+  const { mutate, isPending: addToCartPending } = useAddToCart()
 
   if (isPending) return <ProductDetailSkeleton />
   if (error) return <p>{error.message}</p>
-
-  console.log(product.images)
 
   const handleIncrease = () => {
     if (quantity < product.stock) {
@@ -29,6 +36,28 @@ const ProductDetailPage = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1)
     }
+  }
+
+
+
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      setOpen(true)
+      return
+    }
+    // add to cart logic here
+    const payload = {
+      product: product._id,
+      quantity
+    }
+
+    console.log(payload)
+
+    mutate(payload, {
+      onSuccess: () => {
+        toast.success(`${quantity} items added to cart sucessfully.`)
+      }
+    })
   }
 
   return (
@@ -43,18 +72,22 @@ const ProductDetailPage = () => {
               className="w-full h-full object-cover rounded-xl overflow-hidden"
             />
           </div>
-           <div className="flex gap-4 flex-wrap">
-              {product?.images?.map((img,index) => (
-                <div 
-                key={img.url} 
-                onClick={()=>setSelectedImage(index)} 
-                className={cn("size-20 cursor-pointer border-2 transition-all duration-200 rounded-xl overflow-hidden",
-                  selectedImage === index ? 'border-primary scale-110 shadow-md' : 'border-transparent hover:border-primary'
-                )}>
-                  <img src={img.url} alt={product.name} className="" />
-                </div>
-              ))}
-            </div>
+          <div className="flex gap-4 flex-wrap">
+            {product?.images?.map((img, index) => (
+              <div
+                key={img.url}
+                onClick={() => setSelectedImage(index)}
+                className={cn(
+                  "size-20 cursor-pointer border-2 transition-all duration-200 rounded-xl overflow-hidden",
+                  selectedImage === index
+                    ? "border-primary scale-110 shadow-md"
+                    : "border-transparent hover:border-primary"
+                )}
+              >
+                <img src={img.url} alt={product.name} className="" />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* RIGHT — PRODUCT INFO */}
@@ -112,10 +145,20 @@ const ProductDetailPage = () => {
 
             <Button
               className="flex items-center gap-2"
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || addToCartPending}
+              onClick={handleAddToCart}
             >
-              <ShoppingCart size={18} />
-              Add to Cart
+              {addToCartPending ? (
+                <>
+                  <Spinner />
+                  adding...
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={18} />
+                  Add to Cart
+                </>
+              )}
             </Button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiRequest from "../utils/apiRequest";
 import useAuthStore from "../zustand/useAuth";
 
@@ -13,5 +13,20 @@ export const useUserCart = () => {
             return res.data
         },
         enabled: isAuthenticated
+    })
+}
+
+// add to cart
+export const useAddToCart = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (payload) => {
+           await apiRequest.post('/cart',payload)
+        },
+        onSuccess: () => {
+            // refetch or invalidate useUserCart after adding new item to cart
+           queryClient.invalidateQueries({queryKey:['user-cart']})
+        }
     })
 }

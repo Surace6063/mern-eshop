@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 import { Button } from "./ui/button"
 import { useState } from "react"
 import SignInForm from "./SignInForm"
@@ -21,6 +27,8 @@ const AuthDialog = () => {
         <Button>sign in</Button>
       </DialogTrigger>
       <DialogContent>
+        <DialogTitle></DialogTitle>
+        <DialogDescription></DialogDescription>
         {mode === "signIn" && <SignInForm />}
         {mode === "signUp" && <SignUpForm />}
         {mode === "otp" && <OtpForm />}

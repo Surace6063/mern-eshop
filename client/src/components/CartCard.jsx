@@ -5,21 +5,21 @@ const CartCard = ({item}) => {
   return (
     <div className="p-6 flex gap-6 hover:bg-zinc-50 transition relative shadow-sm rounded-xl group">
        <img 
-       src={item.images[0]} 
-       alt={item.title}  
-       className="size-40 rounded-xl object-cover border border-zinc-200"
+       src={item.product.images[0].url} 
+       alt={item.product.name}  
+       className="size-32 rounded-xl object-cover border border-zinc-200"
        />
 
        <div className="flex-1 flex justify-between">
          <div className="space-y-1">
              <h2 className="font-medium text-gray-800">
-                {item.title}
+                {item.product.name}
              </h2>
              <p className="text-sm text-gray-600">
-                {item.category.name}
+                {item.product.category.name}
              </p>
              <p className="font-medium text-gray-700">
-                quantity: 2
+                quantity: {item.quantity}
              </p>
              <p className="text-primary font-semibold">
                ${item.price}

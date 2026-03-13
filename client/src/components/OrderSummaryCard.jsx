@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 
-const OrderSummaryCard = () => {
+const OrderSummaryCard = ({totalPrice}) => {
   return (
     <div className="border border-border rounded-2xl p-8 bg-zinc-50 h-fit sticky top-24">
       <h1 className="text-xl font-semibold mb-6 text-zinc-900">
@@ -9,7 +9,7 @@ const OrderSummaryCard = () => {
       <div className="space-y-4 text-sm text-zinc-700">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span>$100</span>
+          <span>${totalPrice}</span>
         </div>
         <div className="flex justify-between">
           <span>Shipping estimate</span>
@@ -23,7 +23,7 @@ const OrderSummaryCard = () => {
 
       <div className="border-t border-zinc-200 mt-6 pt-6 flex justify-between font-semibold text-zinc-900">
         <span>Order total</span>
-        <span>$100</span>
+        <span>${totalPrice}</span>
       </div>
 
       <Button
