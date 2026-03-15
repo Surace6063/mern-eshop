@@ -1,6 +1,8 @@
-import { Button } from "./ui/button";
+import { ChevronLeft } from "lucide-react"
+import { Button } from "./ui/button"
+import { Link } from "react-router-dom"
 
-const OrderSummaryCard = ({totalPrice}) => {
+const OrderSummaryCard = ({ totalPrice }) => {
   return (
     <div className="border border-border rounded-2xl p-8 bg-zinc-50 h-fit sticky top-24">
       <h1 className="text-xl font-semibold mb-6 text-zinc-900">
@@ -32,7 +34,12 @@ const OrderSummaryCard = ({totalPrice}) => {
       >
         Checkout
       </Button>
+      <Link to="/products">
+        <Button className="w-full mt-4">
+          <ChevronLeft /> continue shopping
+        </Button>
+      </Link>
     </div>
-  );
-};
-export default OrderSummaryCard;
+  )
+}
+export default OrderSummaryCard

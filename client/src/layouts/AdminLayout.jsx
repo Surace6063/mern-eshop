@@ -1,8 +1,17 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSideBar from "../components/admin/AdminSideBar";
 import { Outlet } from "react-router-dom";
+import useAuthStore from "../zustand/useAuth";
+import { Navigate } from "react-router-dom";
 
 const AdminLayout = () => {
+  const {isAuthenticated, user} = useAuthStore()
+  
+  // if user is not loggedIn and user is not admin, navigate to home page
+  if(!isAuthenticated || user?.role !== "admin"){
+     return <Navigate to="/" replace />
+  }
+
   return (
     <SidebarProvider>
       <AdminSideBar />

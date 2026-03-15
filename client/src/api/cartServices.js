@@ -30,3 +30,34 @@ export const useAddToCart = () => {
         }
     })
 }
+
+
+// remove from cart
+export const useRemoveFromCart = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (id) => {
+           await apiRequest.delete(`/cart/${id}`)
+        },
+        onSuccess: () => {
+            // refetch or invalidate useUserCart after  item is removed from cart
+           queryClient.invalidateQueries({queryKey:['user-cart']})
+        }
+    })
+}
+
+// remove from cart
+export const useClearCart = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async () => {
+           await apiRequest.delete('/cart/clear')
+        },
+        onSuccess: () => {
+            // refetch or invalidate useUserCart after clearing cart
+           queryClient.invalidateQueries({queryKey:['user-cart']})
+        }
+    })
+}

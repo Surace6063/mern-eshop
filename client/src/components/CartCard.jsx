@@ -1,7 +1,18 @@
 import { Plus,Minus, X } from "lucide-react"
 import { Button } from "./ui/button"
+import { useRemoveFromCart } from "../api/cartServices"
+import toast from "react-hot-toast"
 
 const CartCard = ({item}) => {
+   const {mutate,isPending} = useRemoveFromCart()
+
+   const handleRemoveFromCart = () => {
+      mutate(item._id,{
+         onSuccess: () => {
+            toast.success("Item removed from cart sucessfully.")
+         }
+      })
+   }
   return (
     <div className="p-6 flex gap-6 hover:bg-zinc-50 transition relative shadow-sm rounded-xl group">
        <img 
@@ -18,17 +29,17 @@ const CartCard = ({item}) => {
              <p className="text-sm text-gray-600">
                 {item.product.category.name}
              </p>
-             <p className="font-medium text-gray-700">
+             {/* <p className="font-medium text-gray-700">
                 quantity: {item.quantity}
-             </p>
+             </p> */}
              <p className="text-primary font-semibold">
                ${item.price}
              </p>
-             <div className="mt-2 flex items-center gap-1.5">
+             <div className="mt-2 flex items-center gap-2">
                 <Button size="icon" variant="outline">
                     <Plus />
                 </Button>
-                <p>1</p>
+                <p>{item.quantity}</p>
                 <Button size="icon" variant="outline">
                   <Minus />
                 </Button>
@@ -39,7 +50,7 @@ const CartCard = ({item}) => {
             <p>$100</p>
          </div> */}
 
-        <div className="absolute right-4 top-2 opacity-0 group-hover:opacity-100 cursor-pointer transition">
+        <div onClick={handleRemoveFromCart} className="absolute right-4 top-2 opacity-0 group-hover:opacity-100 cursor-pointer transition">
              <X size={20} className="text-gray-600" />
         </div>
 
