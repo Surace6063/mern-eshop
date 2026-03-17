@@ -17,6 +17,8 @@ import Pazination from "../../components/Pazination"
 import { useSearchParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
+import AddProductDialogForm from "../../components/admin/AddProductDialogForm"
+import UpdateProductDialogForm from "../../components/admin/UpdateProductDialogForm"
 
 const LIMIT = 5
 
@@ -58,15 +60,20 @@ const ProductList = () => {
 
         <Input
           placeHolder="search products..."
-          className="max-w-lg"
+          className="max-w-lg hidden lg:block"
           value={searchValue}
           onChange={(e) => setSerachValue(e.target.value)}
         />
 
-        <Button>
-          Add Product <Plus />
-        </Button>
+        <AddProductDialogForm />
       </div>
+
+       <Input
+          placeHolder="search products..."
+          className="w-full lg:hidden mt-4"
+          value={searchValue}
+          onChange={(e) => setSerachValue(e.target.value)}
+        />
 
       <Separator className="my-6" />
 
@@ -121,9 +128,7 @@ const ProductList = () => {
                 <Button variant="destructive">
                   <Trash />
                 </Button>
-                <Button className="bg-sky-600 hover:bg-sky-600/80">
-                  <Edit />
-                </Button>
+                <UpdateProductDialogForm />
               </TableCell>
             </TableRow>
           ))}

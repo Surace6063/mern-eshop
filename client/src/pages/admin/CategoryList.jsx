@@ -9,24 +9,35 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "../../components/ui/separator";
 import { Button } from "../../components/ui/button";
-import { Edit, Plus, Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { useCategories } from "../../api/categoryServices";
+import { useCategories, useDeleteCategory } from "../../api/categoryServices";
+import AddCategoryDialogForm from "../../components/admin/AddCategoryDialogForm";
+import UpdateCategoryDialogForm from "../../components/admin/UpdateCategoryDialogForm";
+import toast from "react-hot-toast";
+import {Spinner} from "@/components/ui/spinner"
 
 const CategoryList = () => {
   const { data, isPending, error } = useCategories()
+  const {mutate,isPending:isDeletePending} = useDeleteCategory()
 
   if (isPending) return <p>loading..</p>;
   if (error) return <p>{error.message}</p>;
+
+  const handleDelete = (id) => {
+     mutate(id,{
+       onSuccess: () => {
+        toast.success("Category deleted sucessfully.")
+       }
+     })
+  }
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-800">Category List</h1>
 
-        <Button>
-          Add Category <Plus />
-        </Button>
+        <AddCategoryDialogForm />
       </div>
 
       <Separator className="my-6" />
@@ -59,13 +70,15 @@ const CategoryList = () => {
               <TableCell className="font-semibold text-gray-700">
                 {cat.name}
               </TableCell>
-              <TableCell className="space-x-2">
-                <Button variant="destructive">
-                  <Trash />
+              <TableCell>
+                <div className="flex gap-1.5 items-center">
+                  <Button variant="destructive" disabled={isDeletePending} onClick={()=>handleDelete(cat._id)}>
+                   {
+                    isPending ? <Spinner /> : <Trash />
+                   }
                 </Button>
-                <Button className="bg-sky-600 hover:bg-sky-600/80">
-                  <Edit />
-                </Button>
+                <UpdateCategoryDialogForm category={cat} />
+                </div>
               </TableCell>
             </TableRow>
           ))}
