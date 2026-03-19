@@ -4,11 +4,7 @@ export const productSchema = yup.object({
 
   name: yup
     .string()
-    .required("Product name is required")
-    .matches(
-      /^[A-Za-z0-9\s\-]{3,100}$/,
-      "Name must be 3-100 characters and can include letters, numbers, spaces and hyphen"
-    ),
+    .required("Product name is required"),
 
   category: yup
     .string()
@@ -32,11 +28,7 @@ export const productSchema = yup.object({
 
   description: yup
     .string()
-    .required("Description is required")
-    .matches(
-      /^[A-Za-z0-9\s.,'-]{10,500}$/,
-      "Description must be 10-500 characters and cannot contain special symbols"
-    ),
+    .required("Description is required"),
 
   images: yup
     .mixed()

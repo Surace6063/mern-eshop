@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -9,8 +8,8 @@ import {
 } from "@/components/ui/table"
 import { Separator } from "../../components/ui/separator"
 import { Button } from "../../components/ui/button"
-import { Edit, Plus, Trash } from "lucide-react"
-import { useProducts } from "../../api/productServices"
+import {  Trash } from "lucide-react"
+import { useDeleteProduct, useProducts } from "../../api/productServices"
 import { cn } from "../../lib/utils"
 import { Input } from "../../components/ui/input"
 import Pazination from "../../components/Pazination"
@@ -19,6 +18,7 @@ import { useEffect, useState } from "react"
 import { useDebounce } from "use-debounce"
 import AddProductDialogForm from "../../components/admin/AddProductDialogForm"
 import UpdateProductDialogForm from "../../components/admin/UpdateProductDialogForm"
+import toast from "react-hot-toast"
 
 const LIMIT = 5
 
@@ -37,6 +37,9 @@ const ProductList = () => {
     page,
     search: debouncedSerachValue
   })
+
+  // delete product
+  const {mutate,isPending:isDeletePending} = useDeleteProduct()
 
 
 
@@ -125,10 +128,20 @@ const ProductList = () => {
               </TableCell>
               <TableCell>{item.stock}</TableCell>
               <TableCell className="space-x-2">
-                <Button variant="destructive">
+                <Button variant="destructive" 
+                disabled={isDeletePending} 
+                onClick={() => mutate(
+                  item.slug,
+                  {
+                    onSuccess: () => {
+                      toast.success("Product deleted sucessfully.")
+                    }
+                  }
+                )}
+                >
                   <Trash />
                 </Button>
-                <UpdateProductDialogForm />
+                <UpdateProductDialogForm product={item} />
               </TableCell>
             </TableRow>
           ))}

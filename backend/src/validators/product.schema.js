@@ -12,8 +12,7 @@ const productBaseSchema = z.object({
     .string({ required_error: "Product name is required" })
     .nonempty("Product name is required")
     .min(3, "Product name must be at least 3 characters")
-    .max(50, "Product name cannot exceed 50 characters")
-    .regex(nameRegex, "Product name can only contain letters and spaces"),
+    .max(50, "Product name cannot exceed 50 characters"),
 
   description: z
     .string()

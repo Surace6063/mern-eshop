@@ -120,11 +120,11 @@ export const createProduct = asyncHandler(async (req, res, next) => {
 
 /**
  * @desc delete product
- * @route DELETE /api/products/:id
+ * @route DELETE /api/products/:slug
  * @access Admin
  */
 export const deleteProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id)
+  const product = await Product.findOne({slug:req.params.slug})
   if (!product) return next(ErrorMessage("Product not found!", 404))
   // if product images has public_id delete existing images
   if (product?.images?.length) {
@@ -146,12 +146,12 @@ export const deleteProduct = asyncHandler(async (req, res, next) => {
  * @access Admin
  */
 export const updateProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id)
+  const product = await Product.findById({slug:req.params.slug})
 
   if (!product) return next(ErrorMessage("Product not found!", 404))
 
   // update fields dynamically (partial update)
-  Object.assign(product, req.body)
+  Object.assign(product._id, req.body)
 
   // if name is updated → regenerate slug
   if (req.body.name) {

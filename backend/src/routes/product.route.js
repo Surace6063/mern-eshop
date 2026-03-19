@@ -27,7 +27,7 @@ router
       protect,
       adminOnly,
      upload.array('images'),
-     zodValidate(updateProductSchema),
+    //  zodValidate(updateProductSchema),
      updateProduct
 )
 
