@@ -146,44 +146,44 @@ export const deleteProduct = asyncHandler(async (req, res, next) => {
  * @access Admin
  */
 export const updateProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById({slug:req.params.slug})
+  const product = await Product.findOne({ slug: req.params.slug })
 
   if (!product) return next(ErrorMessage("Product not found!", 404))
 
-  // update fields dynamically (partial update)
-  Object.assign(product._id, req.body)
+  // update fields
+  Object.assign(product, req.body)
 
-  // if name is updated → regenerate slug
+  // regenerate slug if name changes
   if (req.body.name) {
     product.slug = createSlugify(req.body.name)
   }
 
-  // update image in cloudinary... also delete previous image
-  if (req.file) {
+  // update images
+  if (req.files?.length) {
     if (product?.images?.length) {
       await Promise.all(
-        product?.images?.map((img) => deleteFromCloudinary(img.public_id))
-      )
-    }
-
-    if (req.files?.length) {
-      const uploads = await Promise.all(
-        req.files.map((file) =>
-          uploadToCloudinary(file.buffer, "eshop/products")
+        product.images.map((img) =>
+          deleteFromCloudinary(img.public_id)
         )
       )
-
-      req.body.images = uploads.map((img) => ({
-        url: img.secure_url,
-        public_id: img.public_id
-      }))
     }
+
+    const uploads = await Promise.all(
+      req.files.map((file) =>
+        uploadToCloudinary(file.buffer, "eshop/products")
+      )
+    )
+
+    product.images = uploads.map((img) => ({
+      url: img.secure_url,
+      public_id: img.public_id
+    }))
   }
 
   await product.save()
 
   res.status(200).json({
-    message: "Category updated successfully.",
+    message: "Product updated successfully.",
     product
   })
 })
