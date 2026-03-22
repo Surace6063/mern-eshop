@@ -44,6 +44,8 @@ const UpdateProductDialogForm = ({ product }) => {
     // resolver: yupResolver(productSchema)
   })
 
+  const selectedCategory = watch("category")
+
   useEffect(()=>{
     if(product){
       setValue("name",product.name)
@@ -83,6 +85,7 @@ const UpdateProductDialogForm = ({ product }) => {
       onSuccess: () => {
         toast.success("Product updated sucessfully.")
         setOpen(false)
+        reset()
       }
     })
   }
@@ -105,6 +108,19 @@ const UpdateProductDialogForm = ({ product }) => {
           <DialogHeader>
             <DialogTitle>Update Product</DialogTitle>
           </DialogHeader>
+
+           {product?.images?.length > 0 && (
+              <div className="grid grid-cols-4 gap-2">
+                {product?.images.map((img) => (
+                  <img
+                    src={img.url}
+                    key={img.url}
+                    alt="img"
+                    className="rounded-md shadow size-20 object-contain"
+                  />
+                ))}
+              </div>
+            )}
 
           {/* Image Upload */}
           <div className="space-y-2">
@@ -135,7 +151,7 @@ const UpdateProductDialogForm = ({ product }) => {
                     src={img}
                     key={img}
                     alt="img"
-                    className="rounded-md shadow"
+                    className="rounded-md shadow size-20"
                   />
                 ))}
               </div>
@@ -155,7 +171,7 @@ const UpdateProductDialogForm = ({ product }) => {
           {/* Category */}
           <div className="space-y-2">
             <Label htmlFor="cat">Category</Label>
-            <Select onValueChange={(value) => setValue("category", value)}>
+            <Select value={selectedCategory} onValueChange={(value) => setValue("category", value)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
