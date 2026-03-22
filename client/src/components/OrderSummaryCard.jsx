@@ -28,12 +28,11 @@ const OrderSummaryCard = ({ totalPrice }) => {
         <span>${totalPrice}</span>
       </div>
 
-      <Button
-        onClick={() => navigate("/checkout")}
-        className="w-full mt-6 rounded-xl bg-zinc-900 hover:bg-zinc-800"
-      >
-        Checkout
-      </Button>
+      <Link to="/checkout">
+        <Button className="w-full mt-6 rounded-xl bg-zinc-900 hover:bg-zinc-800">
+          Checkout
+        </Button>
+      </Link>
       <Link to="/products">
         <Button className="w-full mt-4">
           <ChevronLeft /> continue shopping
