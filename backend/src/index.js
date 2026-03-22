@@ -6,6 +6,8 @@ import categoryRoute from "./routes/category.route.js";
 import productRoute from "./routes/product.route.js";
 import authRoute from "./routes/auth.route.js";
 import cartRoute from "./routes/cart.route.js";
+import userRoute from "./routes/user.route.js";
+import orderRoute from "./routes/order.route.js";
 import globalErrorHandler from "./middlewares/globalErrorhandler.js";
 import cors from "./middlewares/cors.js";
 import cookieParser from "cookie-parser";
@@ -40,6 +42,8 @@ app.use('/api/products', productRoute)
 app.use('/api/auth', authRoute)
 // cart route
 app.use('/api/cart',cartRoute)
+app.use('/api',userRoute)
+app.use('/api/orders',orderRoute)
 
 
 // global error handler
