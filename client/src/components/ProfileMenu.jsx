@@ -41,7 +41,9 @@ const ProfileMenu = () => {
         {user?.role === "user" && (
           <>
             <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Orders</DropdownMenuItem>
+           <Link to="/orders">
+              <DropdownMenuItem>Orders</DropdownMenuItem>
+           </Link>
           </>
         )}
         {user?.role === "admin" && (
