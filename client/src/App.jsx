@@ -11,6 +11,8 @@ import CategoryList from "./pages/admin/CategoryList";
 import UserList from "./pages/admin/UserList";
 import OrderList from "./pages/admin/OrderList";
 import { Toaster } from 'react-hot-toast'
+import CheckOutForm from "./pages/CheckOutForm";
+import UserOrderList from "./pages/UserOrderList";
 
 const App = () => {
   return (
@@ -23,6 +25,8 @@ const App = () => {
           <Route path="/products" element={<ProductPage />} />
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckOutForm />} />
+          <Route path="/orders" element={<UserOrderList />} />
         </Route>
 
         {/* admin layout */}
