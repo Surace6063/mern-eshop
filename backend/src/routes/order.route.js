@@ -5,6 +5,6 @@ import { createOrder, getOrders } from "../controllers/order.controller.js"
 const router = express.Router()
 
 router.get('/',protect,getOrders)
-router.post("/",createOrder)
+router.post("/",protect,createOrder)
 
 export default router
