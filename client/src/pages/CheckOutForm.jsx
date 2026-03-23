@@ -9,10 +9,14 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { checkoutValidationSchema } from "../components/validations/checkoutValidation"
 import { useForm } from "react-hook-form"
 import { useUserCart } from "../api/cartServices"
+import { useCreateOrder } from "../api/orderServices"
+import toast from "react-hot-toast"
 
 const CheckOutForm = () => {
   const navigate = useNavigate()
   const { data, isPending, error } = useUserCart()
+  // create new order
+  const {mutate,isPending:isOrderPending} = useCreateOrder()
 
   const {
     register,
@@ -22,8 +26,24 @@ const CheckOutForm = () => {
     resolver: yupResolver(checkoutValidationSchema)
   })
 
+  const items = data?.cart?.items?.map((item) => ({
+    product: item.product._id,
+    quantity: item.quantity,
+    price: item.price
+  }))
+
   const handleCheckOut = (data) => {
-    console.log(data)
+    const payload = {
+      ...data,
+      items
+    }
+
+    mutate(payload,{
+      onSuccess: () => {
+          navigate('/orders')
+          toast.success("Order placed sucessfully.")
+      }
+    })
   }
 
   return (
@@ -160,25 +180,21 @@ const CheckOutForm = () => {
                 <p>{error.message}</p>
               ) : (
                 <>
-                  {
-                    data?.cart?.items.map(item => (
-                    <div className="flex gap-3">
-                    <img
-                      src={item.product.images[0].url}
-                      className="h-16 w-16 rounded"
-                      alt="product"
-                    />
-                    <div className="text-sm">
-                      <p className="font-medium">
-                        {item.product.name}
-                      </p>
-                      <p className="text-muted-foreground">
-                        ${item.price} × {item.quantity}
-                    </p>
+                  {data?.cart?.items.map((item) => (
+                    <div key={item._id} className="flex gap-3">
+                      <img
+                        src={item.product.images[0].url}
+                        className="h-16 w-16 rounded"
+                        alt="product"
+                      />
+                      <div className="text-sm">
+                        <p className="font-medium">{item.product.name}</p>
+                        <p className="text-muted-foreground">
+                          ${item.price} × {item.quantity}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                    ))
-                  }
+                  ))}
 
                   <Separator />
 
@@ -265,9 +281,10 @@ const CheckOutForm = () => {
                 </p>
               )}
 
-              <Button className="w-full mt-3">
-                {/* <Spinner /> */}
-                Place Order
+              <Button className="w-full mt-3" disabled={isOrderPending || isPending}>
+                 {
+                  isOrderPending ? "ordering..." : "Place order"
+                 }
               </Button>
             </div>
           </div>
