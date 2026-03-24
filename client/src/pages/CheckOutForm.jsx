@@ -32,16 +32,26 @@ const CheckOutForm = () => {
     price: item.price
   }))
 
-  const handleCheckOut = (data) => {
+  const handleCheckOut = (formData) => {
     const payload = {
-      ...data,
+      ...formData,
       items
     }
 
     mutate(payload,{
-      onSuccess: () => {
-          navigate('/orders')
-          toast.success("Order placed sucessfully.")
+      onSuccess: (data) => {
+          if(formData.paymentMethod === "cod"){
+            navigate('/orders')
+            toast.success("Order placed sucessfully.")
+          }else{
+            // if payment method is esewa navigate to esewa form
+            // aslo sending order response 
+            navigate('/esewa/form',{
+              state: {
+                orderData: data
+              }
+            })
+          }
       }
     })
   }

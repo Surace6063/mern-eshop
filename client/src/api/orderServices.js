@@ -26,7 +26,8 @@ export const useCreateOrder = () => {
           const res =  await apiRequest.post('/orders',payload)
           return res.data
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            // console.log(data)
             // refetch or invalidate orders after creating new order
            queryClient.invalidateQueries({queryKey:['orders','user-cart']})
         },

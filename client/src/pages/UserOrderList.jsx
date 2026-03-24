@@ -2,18 +2,13 @@ import { useGetOrders } from "../api/orderServices"
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow
 } from "@/components/ui/table"
 import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-import { Eye } from "lucide-react"
 import { cn } from "@/lib/utils"
-import toast from "react-hot-toast"
-import { Spinner } from "@/components/ui/spinner"
 import MaxWidthContainer from "@/components/ui/maxwidthcontainer"
 import OrderDetailsDialog from "../components/OrderDetailsDialog"
 
@@ -31,7 +26,7 @@ const UserOrderList = () => {
   return (
     <MaxWidthContainer className="min-h-[60vh] my-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-800">Category List</h1>
+        <h1 className="text-2xl font-semibold text-gray-800">Order List</h1>
       </div>
 
       <Separator className="my-6" />
@@ -72,12 +67,14 @@ const UserOrderList = () => {
                 {order.status}
               </TableCell>
               <TableCell className="font-semibold text-gray-700">
-                {order.items.map((item) => (
-                  <p key={item._id}>{item.product}</p>
+                {order.items.map((item,index) => (
+                  <p key={item._id}>
+                   {index+1}. {item.product.name}
+                  </p>
                 ))}
               </TableCell>
               <TableCell>
-                <OrderDetailsDialog />
+                <OrderDetailsDialog order={order} />
               </TableCell>
             </TableRow>
           ))}

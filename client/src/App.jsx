@@ -13,6 +13,8 @@ import OrderList from "./pages/admin/OrderList";
 import { Toaster } from 'react-hot-toast'
 import CheckOutForm from "./pages/CheckOutForm";
 import UserOrderList from "./pages/UserOrderList";
+import EsewaForm from "./pages/EsewaForm";
+import EsewaSuccesPage from "./pages/EsewaSuccesPage";
 
 const App = () => {
   return (
@@ -28,6 +30,9 @@ const App = () => {
           <Route path="/checkout" element={<CheckOutForm />} />
           <Route path="/orders" element={<UserOrderList />} />
         </Route>
+
+        <Route path="/esewa/form" element={<EsewaForm />} />
+        <Route path="/esewa/success/:orderId" element={<EsewaSuccesPage />} />
 
         {/* admin layout */}
         <Route path="/dashboard" element={<AdminLayout />}>
