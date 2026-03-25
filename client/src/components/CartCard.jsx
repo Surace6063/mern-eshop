@@ -16,7 +16,7 @@ const CartCard = ({item}) => {
   return (
     <div className="p-6 flex gap-6 hover:bg-zinc-50 transition relative shadow-sm rounded-xl group">
        <img 
-       src={item.product.images[0].url} 
+       src={item?.product?.images[0]?.url} 
        alt={item.product.name}  
        className="size-32 rounded-xl object-cover border border-zinc-200"
        />

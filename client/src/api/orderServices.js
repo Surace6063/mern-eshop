@@ -36,3 +36,22 @@ export const useCreateOrder = () => {
         }
     })
 }
+
+// verify esewa
+export const useVerifyEsewaPayment = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (payload) => {
+          const res =  await apiRequest.post('/orders/esewa/verify',payload)
+          return res.data
+        },
+        onSuccess: () => {
+            // refetch or invalidate orders after creating new order
+           queryClient.invalidateQueries({queryKey:['orders','user-cart']})
+        },
+        onError: (error) => {
+          console.log(error)
+        }
+    })
+}

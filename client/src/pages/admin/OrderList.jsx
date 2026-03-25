@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import MaxWidthContainer from "@/components/ui/maxwidthcontainer"
 import OrderDetailsDialog from "@/components/OrderDetailsDialog"
+import { Badge } from "../../components/ui/badge"
 
 const OrderList = () => {
   const { data, isPending, error } = useGetOrders()
@@ -18,7 +19,6 @@ const OrderList = () => {
   if (isPending) return <p>loading...</p>
   if (error) return <p>{error.message}</p>
 
-  console.log(data)
 
   if (data?.orders?.length === 0)
     return <p>No order history.</p>
@@ -36,7 +36,6 @@ const OrderList = () => {
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Full Name</TableHead>
-            <TableHead>Email</TableHead>
             <TableHead>Address</TableHead>
             <TableHead>Payment Method</TableHead>
             <TableHead>Status</TableHead>
@@ -53,10 +52,7 @@ const OrderList = () => {
               <TableCell className="font-semibold text-gray-800">
                 {order._id}
               </TableCell>
-              <TableCell>{order.fullName}</TableCell>
-              <TableCell className="font-semibold text-gray-700">
-                {order.email}
-              </TableCell>
+              <TableCell className="font-medium text-slate-800">{order.fullName}</TableCell>
               <TableCell className="font-semibold text-gray-700">
                 {order.address}
               </TableCell>
@@ -64,12 +60,16 @@ const OrderList = () => {
                 {order.paymentMethod}
               </TableCell>
               <TableCell className="font-semibold text-gray-700">
-                {order.status}
+                {order.status && <Badge className={cn(
+                  order.status === "pending" ? "bg-yellow-400" : "bg-green-500"
+                 )}>
+                  {order.status}
+                  </Badge>}
               </TableCell>
               <TableCell className="font-semibold text-gray-700">
                 {order.items.map((item,index) => (
                   <p key={item._id}>
-                   {index+1}. {item.product.name}
+                   {index+1}. {item.product.name} (*{item.quantity})
                   </p>
                 ))}
               </TableCell>

@@ -133,3 +133,65 @@ export const createOrder = asyncHandler(async (req, res, next) => {
     })
   }
 })
+
+
+
+/**
+ * @desc verify esewa payment
+ * @route /api/orders/esewa/verify
+ * @access Private
+ */
+export const esewaSuccess = async (req, res) => {
+  try {
+    // Extract order_id and encoded data from request body
+    const { order_id, data } = req.body;
+
+    // Validate required fields
+    if (!order_id || !data) {
+      return res.status(400).json({
+        message: "Missing order_id or data",
+      });
+    }
+
+    // Find order in database using order_id
+    const order = await Order.findById(order_id);
+
+    // If order does not exist, return 404 error
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found",
+      });
+    }
+
+    // Decode Base64 encoded response data from eSewa
+    const decoded = Buffer.from(data, "base64").toString("utf8");
+
+    // Parse decoded JSON string into JavaScript object
+    const parsed = JSON.parse(decoded);
+
+    // Extract and normalize payment status (convert to uppercase)
+    const statusValue = parsed.status?.toUpperCase();
+
+    // If payment is successful
+    if (statusValue === "COMPLETE") {
+      // Update order status to completed
+      order.status = "completed";
+
+      // Save updated order in database
+      await order.save();
+
+      // Send success response
+      return res.json({
+        message: "Payment successful. Order completed.",
+      });
+    }
+
+    // For other statuses (FAILED, PENDING, etc.)
+    res.json({
+      message: `Transaction status: ${statusValue}`,
+    });
+  } catch (error) {
+    // Handle unexpected errors
+    res.status(500).json({ message: error.message });
+  }
+};

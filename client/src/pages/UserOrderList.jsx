@@ -11,14 +11,19 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import MaxWidthContainer from "@/components/ui/maxwidthcontainer"
 import OrderDetailsDialog from "../components/OrderDetailsDialog"
+import { Badge } from "../components/ui/badge"
+import useAuthStore from "../zustand/useAuth"
+import { Navigate  } from "react-router-dom"
 
 const UserOrderList = () => {
+  const {isAuthenticated} = useAuthStore()
+
+  if(!isAuthenticated) return <Navigate to="/" replace />
+
   const { data, isPending, error } = useGetOrders()
 
   if (isPending) return <p>loading...</p>
   if (error) return <p>{error.message}</p>
-
-  console.log(data)
 
   if (data?.orders?.length === 0)
     return <p>No order history.</p>
@@ -64,7 +69,11 @@ const UserOrderList = () => {
                 {order.paymentMethod}
               </TableCell>
               <TableCell className="font-semibold text-gray-700">
-                {order.status}
+                 {order.status && <Badge className={cn(
+                  order.status === "pending" ? "bg-yellow-400" : "bg-green-500"
+                 )}>
+                  {order.status}
+                  </Badge>}
               </TableCell>
               <TableCell className="font-semibold text-gray-700">
                 {order.items.map((item,index) => (
