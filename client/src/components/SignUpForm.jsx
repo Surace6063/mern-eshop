@@ -9,6 +9,7 @@ import { registerValidationSchema } from "./validations/authValidation"
 import { Spinner } from "@/components/ui/spinner"
 import { useRegisterUser } from "../api/authServices"
 import toast from "react-hot-toast"
+import GoogleLoginButton from "./GoogleLoginButton"
 
 const SignUpForm = () => {
   const { setMode, setEmail } = useAuthMode()
@@ -122,9 +123,7 @@ const SignUpForm = () => {
       </div>
 
       {/* Google Button */}
-      <Button variant="outline" className="w-full">
-        Continue with Google
-      </Button>
+      <GoogleLoginButton />
 
       {/* Switch */}
       <div className="text-sm text-muted-foreground">

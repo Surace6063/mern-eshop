@@ -11,6 +11,7 @@ import { useLoginUser } from "../api/authServices"
 import toast from "react-hot-toast"
 import useAuthStore from "../zustand/useAuth"
 import { useNavigate } from "react-router-dom"
+import GoogleLoginButton from "./GoogleLoginButton"
 
 const SignInForm = () => {
   const { setMode, setOpen } = useAuthMode()
@@ -104,9 +105,7 @@ const SignInForm = () => {
       </div>
 
       {/* Google Button */}
-      <Button variant="outline" className="w-full">
-        Continue with Google
-      </Button>
+      <GoogleLoginButton />
 
       {/* Switch */}
       <div className="text-sm text-muted-foreground">

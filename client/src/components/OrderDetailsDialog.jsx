@@ -21,9 +21,12 @@ import {
 import { Button } from "./ui/button"
 import { Eye } from "lucide-react"
 import useAuthStore from "../zustand/useAuth"
+import { useOrderCompleted } from "../api/orderServices"
+import toast from "react-hot-toast"
 
 const OrderDetailDialog = ({ order }) => {
   const {user} = useAuthStore()
+  const {mutate,isPending} = useOrderCompleted()
   
   // Calculate total quantity and total price
   const totalQuantity = order.items.reduce(
@@ -34,6 +37,14 @@ const OrderDetailDialog = ({ order }) => {
     (sum, item) => sum + item.price * item.quantity,
     0
   )
+
+  const handleOrderCompleted = () => {
+    mutate(order._id,{
+      onSuccess: () => {
+        toast.success("Order marked as completed.")
+      }
+    })
+  }
 
   return (
     <Dialog>
@@ -83,7 +94,7 @@ const OrderDetailDialog = ({ order }) => {
             </Badge>
             </div>
             {user?.role === "admin" && order.status === "pending" && (
-            <Button size="sm" className="bg-slate-900 hover:bg-slate-900/80 cursor-pointer">
+            <Button disabled={isPending} onClick={handleOrderCompleted} size="sm" className="bg-slate-900 hover:bg-slate-900/80 cursor-pointer">
               Mark as completed
             </Button>
           )}

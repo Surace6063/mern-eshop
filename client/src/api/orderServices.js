@@ -55,3 +55,22 @@ export const useVerifyEsewaPayment = () => {
         }
     })
 }
+
+// mark order as completed
+export const useOrderCompleted = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (id) => {
+          const res =  await apiRequest.patch(`/orders/complete/${id}`)
+          return res.data
+        },
+        onSuccess: () => {
+            // refetch or invalidate orders after creating new order
+           queryClient.invalidateQueries({queryKey:['orders']})
+        },
+        onError: (error) => {
+          console.log(error)
+        }
+    })
+}

@@ -15,8 +15,20 @@ import CheckOutForm from "./pages/CheckOutForm";
 import UserOrderList from "./pages/UserOrderList";
 import EsewaForm from "./pages/EsewaForm";
 import EsewaSuccesPage from "./pages/EsewaSuccesPage";
+import { useUserProfile } from "./api/authServices";
+import { useEffect } from "react";
+import useAuthStore from "./zustand/useAuth";
 
 const App = () => {
+//   const {setUser,fetchCurrentUser} = useAuthStore()
+//   // const {data} = useUserProfile()
+
+//   // console.log(data)
+
+//  useEffect(() => {
+//   fetchCurrentUser()
+// }, []);
+
   return (
     <>
       <Toaster />

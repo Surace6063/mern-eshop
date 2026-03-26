@@ -1,11 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
-import apiRequest from "../utils/apiRequest";
+import { useMutation, useQuery } from "@tanstack/react-query"
+import apiRequest from "../utils/apiRequest"
+import useAuthStore from "../zustand/useAuth"
 
 // register user
 export const useRegisterUser = () => {
-    return useMutation({
+  return useMutation({
     mutationFn: async (registerData) => {
-      const response =  await apiRequest.post("/auth/register", registerData)
+      const response = await apiRequest.post("/auth/register", registerData)
       return response.data
     }
   })
@@ -13,9 +14,9 @@ export const useRegisterUser = () => {
 
 // verify email token
 export const useEmailVerifyToken = () => {
-    return useMutation({
+  return useMutation({
     mutationFn: async (tokenData) => {
-      const response =  await apiRequest.post("/auth/verify-token", tokenData)
+      const response = await apiRequest.post("/auth/verify-token", tokenData)
       return response.data
     }
   })
@@ -23,9 +24,9 @@ export const useEmailVerifyToken = () => {
 
 // login user
 export const useLoginUser = () => {
-    return useMutation({
+  return useMutation({
     mutationFn: async (loginData) => {
-      const response =  await apiRequest.post("/auth/login", loginData)
+      const response = await apiRequest.post("/auth/login", loginData)
       return response.data
     }
   })
@@ -33,10 +34,24 @@ export const useLoginUser = () => {
 
 // logout user
 export const useLogoutUser = () => {
-    return useMutation({
+  return useMutation({
     mutationFn: async () => {
-      const response =  await apiRequest.post("/auth/logout")
+      const response = await apiRequest.post("/auth/logout")
       return response.data
     }
+  })
+}
+
+// get user profile
+export const useUserProfile = () => {
+  const {isAuthenticated} = useAuthStore()
+
+  return useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const res = await apiRequest.get("/profile/me")
+      return res.data
+    },
+    enabled: isAuthenticated
   })
 }

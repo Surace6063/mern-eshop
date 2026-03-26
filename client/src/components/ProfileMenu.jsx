@@ -34,7 +34,7 @@ const ProfileMenu = () => {
             alt="@shadcn"
             className="grayscale"
           />
-          <AvatarFallback>{user?.fullName[0]}</AvatarFallback>
+          {/* <AvatarFallback>{user?.fullName[0]}</AvatarFallback> */}
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

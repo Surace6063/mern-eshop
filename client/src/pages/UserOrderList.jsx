@@ -17,13 +17,12 @@ import { Navigate  } from "react-router-dom"
 
 const UserOrderList = () => {
   const {isAuthenticated} = useAuthStore()
-
-  if(!isAuthenticated) return <Navigate to="/" replace />
-
-  const { data, isPending, error } = useGetOrders()
+    const { data, isPending, error } = useGetOrders()
 
   if (isPending) return <p>loading...</p>
   if (error) return <p>{error.message}</p>
+
+    if(!isAuthenticated) return <Navigate to="/" replace />
 
   if (data?.orders?.length === 0)
     return <p>No order history.</p>
