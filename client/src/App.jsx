@@ -20,14 +20,14 @@ import { useEffect } from "react";
 import useAuthStore from "./zustand/useAuth";
 
 const App = () => {
-//   const {setUser,fetchCurrentUser} = useAuthStore()
+  const {fetchCurrentUser} = useAuthStore()
 //   // const {data} = useUserProfile()
 
 //   // console.log(data)
 
-//  useEffect(() => {
-//   fetchCurrentUser()
-// }, []);
+ useEffect(() => {
+  fetchCurrentUser()
+}, [fetchCurrentUser])
 
   return (
     <>

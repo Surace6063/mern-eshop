@@ -8,24 +8,15 @@ const useAuthStore = create(
       isAuthenticated: false,
       user: null,
 
-      setUser: (userData) =>
-        set({
-          isAuthenticated: true,
-          user: userData
-        }),
-      clearUser: () =>{
-        set({
-          isAuthenticated: false,
-          user: null
-        })
+      setUser: (user) => set({ isAuthenticated: true, user }),
 
-        // 🔥 CLEAR PERSISTED STORAGE PROPERLY
-        useAuthStore.persist.clearStorage()
-      },
+      clearUser: () => set({ isAuthenticated: false, user: null }),
+
       fetchCurrentUser: async () => {
         try {
           const response = await apiRequest.get("/profile/me")
           const userData = response.data.user
+          console.log(userData)
           set({ isAuthenticated: true, user: userData })
         } catch (error) {
           set({ isAuthenticated: false, user: null })
@@ -33,7 +24,7 @@ const useAuthStore = create(
       }
     }),
     {
-      name: "user" // key in local-storage
+      name: "user" // key in localStorage
     }
   )
 )

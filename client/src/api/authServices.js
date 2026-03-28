@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import apiRequest from "../utils/apiRequest"
 import useAuthStore from "../zustand/useAuth"
 
@@ -34,10 +34,15 @@ export const useLoginUser = () => {
 
 // logout user
 export const useLogoutUser = () => {
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: async () => {
       const response = await apiRequest.post("/auth/logout")
       return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:['profile']})
     }
   })
 }

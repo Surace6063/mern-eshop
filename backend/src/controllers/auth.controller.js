@@ -155,7 +155,7 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: false, // true in production (https)
-    sameSite: "none"
+    sameSite: "lax"
   })  
   res.status(200).json({
     message: "User logged out sucessfully."

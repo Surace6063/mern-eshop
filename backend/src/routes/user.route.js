@@ -5,7 +5,7 @@ import { getUserProfile, getUsers } from "../controllers/user.controller.js"
 
 const router = express.Router()
 
-router.get('/users',protect,adminOnly, getUsers)
 router.get("/profile/me",protect,getUserProfile)
+router.get('/users',protect,adminOnly, getUsers)
 
 export default router
